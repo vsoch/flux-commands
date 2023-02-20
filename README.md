@@ -48,9 +48,8 @@ $ flux run -f mybatch.sh
 Run a flux job in a new flux allocation
 
 ```console
-# Submit a job directly to get back an id
+# Provide a script or command for the allocation
 $ flux alloc sleep 10
-ƒhejTu4KTFm
 
 # Submit a flux job file
 $ flux alloc -f mybatch.sh
