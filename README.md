@@ -11,9 +11,9 @@ intuitive, and predictable.
 
 ```console
 admin              Administrative commands
-alloc              Interactively enqueue a job within a sub allocation
-attach             Interactively attach to job
-batch              Non-interactively enqueue a job within a sub allocation
+alloc              Interactively allocate a new flux instance and run a command/script within
+attach             Interactively attach stdin/stdout/stderr to job
+batch              Allocate a new flux instance and run a command/script within
 cancel             Cancel one or more jobs
 info               Display info for one or more jobs
 kill               Forcefully kill one or more running jobs
@@ -22,9 +22,9 @@ cron               Schedule tasks on timers and events
 exec               Execute processes across flux ranks in a job
 jobs               Show queued, running, and historical flux jobs
 prune              Purge the oldest inactive jobs
-run                Run a command as a job interactively
+run                Interactively run a command/script in the existing Flux instance
 ssh                Create proxy environment for Flux instance
-submit             Non-interactively enqueue a job
+submit             Run a command/script in the existing Flux instance
 system             System commands
 version            Display flux version information
 wait               Wait for job(s) to complete  
