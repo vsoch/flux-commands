@@ -30,39 +30,41 @@ version            Display flux version information
 wait               Wait for job(s) to complete  
 ```
 
-### flux submit
+### Submit/Run a Flux Job
 
 #### Interactively
 
-Run a flux job in an existing flux allocation
+Run a flux job in an existing flux instance
+
 ```console
 # Submit a job directly to get back an id
-$ flux run sleep 10
-ƒhejTu4KTFm
+$ flux run echo 'hello world'
+hello world
 
 # Submit a flux job file
 $ flux run -f mybatch.sh
-ƒhejTu4KTFm
+hello world
 ```
 
-Run a flux job in a new flux allocation
+Allocate and run a command within a **new flux instance**
 
 ```console
-# Provide a script or command for the allocation
-$ flux alloc sleep 10
+# Allocate a new flux instance and run a command
+$ flux alloc echo 'hello world'
+hello world
 
-# Submit a flux job file
+# Allocate a new flux instance with a flux job file
 $ flux alloc -f mybatch.sh
-ƒhejTu4KTFm
+hello world
 ```
 
 #### Non-interactively
 
-Submit flux jobs to an existing flux allocation
+Run a flux job in an existing flux instance
 
 ```console
 # Submit a job directly to get back an id
-$ flux submit sleep 10
+$ flux submit echo 'hello world'
 ƒhejTu4KTFm
 
 # Submit a flux job file
@@ -70,11 +72,11 @@ $ flux submit -f mybatch.sh
 ƒhejTu4KTFm
 ```
 
-Submit flux jobs to a new flux allocation
+Allocate and run a command within a **new flux instance**
 
 ```console
 # Submit a job directly to get back an id
-$ flux batch sleep 10
+$ flux batch echo 'hello world'
 ƒhejTu4KTFm
 
 # Submit a flux job file
