@@ -11,37 +11,80 @@ intuitive, and predictable.
 
 ```console
 admin              Administrative commands
-alloc              allocate a new instance for interactive use
-attach             Interactively attach to job
+alloc              Interactively allocate a new flux instance and run a command/script within
+attach             Interactively attach stdin/stdout/stderr to job
+batch              Allocate a new flux instance and run a command/script within
 cancel             Cancel one or more jobs
-info               Display info for a job
-kill               Send signal to one or more running jobs
+id                 Convert jobid(s) to another form
+info               Display info for one or more jobs
+kill               Forcefully kill one or more running jobs
 signal             Send a signal (e.g., raise exception) on one or more jobs
 cron               Schedule tasks on timers and events
-exec               Execute processes across flux ranks
-jobs               flux jobs queue listing
-purge              Purge the oldest inactive jobs
-resource           list/manipulate Flux resource status
-run                run a job interactively
+exec               Execute processes across flux ranks in a job
+jobs               Show queued, running, and historical flux jobs
+prune              Purge the oldest inactive jobs
+resource           List/manipulate Flux resource status
+run                Interactively run a command/script in the existing Flux instance
 ssh                Create proxy environment for Flux instance
-submit             enqueue a job
-system             list/manipulate Flux resource status
+submit             Run a command/script in the existing Flux instance
+system             System commands
 version            Display flux version information
-wait               Wait for job(s) to complete.   
+wait               Wait for job(s) to complete  
 ```
 
-### flux submit
+### Submit/Run a Flux Job
 
-Submit flux jobs
+#### Interactively
+
+Run a flux job in an existing flux instance
 
 ```console
 # Submit a job directly to get back an id
-$ flux submit sleep 10
+$ flux run echo 'hello world'
+hello world
+
+# Submit a flux job file
+$ flux run -f mybatch.sh
+hello world
+```
+
+Allocate and run a command within a **new flux instance**
+
+```console
+# Allocate a new flux instance and run a command
+$ flux alloc echo 'hello world'
+hello world
+
+# Allocate a new flux instance with a flux job file
+$ flux alloc -f mybatch.sh
+hello world
+```
+
+#### Non-interactively
+
+Run a flux job in an existing flux instance
+
+```console
+# Submit a job directly to get back an id
+$ flux submit echo 'hello world'
+ƒhejTu4KTFm
 
 # Submit a flux job file
 $ flux submit -f mybatch.sh
+ƒhejTu4KTFm
 ```
 
+Allocate and run a command within a **new flux instance**
+
+```console
+# Submit a job directly to get back an id
+$ flux batch echo 'hello world'
+ƒhejTu4KTFm
+
+# Submit a flux job file
+$ flux batch -f mybatch.sh
+ƒhejTu4KTFm
+```
 
 ### flux cancel
 
@@ -51,26 +94,33 @@ Cancel flux jobs
 # Cancel a job with a particular id
 $ flux cancel <jobid>
 
-# Cancel all flux jobs (with confirmation)
+# Cancel all flux jobs (with confirmation, limited to user namespace)
 $ flux cancel --all
 
 # Cancel all flux jobs (with force)
 $ flux cancel --all --force
+
+# Cancel all flux jobs (with confirmation, all users)
+$ sudo flux cancel --all --users all
 ```
 
 ### flux kill
 
-Kill flux jobs, sending a signal. This is the "not nice way" to cancel.
+Kill flux jobs, forcefully cancelling if in the queue,
+if running send a SIGTERM. This is the "not nice way" to cancel.
 
 ```console
 # Kill a job with a particular id
 $ flux kill <jobid>
 
-# Kill all flux jobs (with confirmation)
+# Kill all flux jobs (with confirmation, limited to user namespace)
 $ flux kill --all
 
 # Kill all flux jobs (with force)
 $ flux kill --all --force
+
+# Kill all flux jobs (with confirmation, all users)
+$ sudo flux kill --all --users all
 ```
 
 ### flux jobs
@@ -81,7 +131,7 @@ Flux jobs queue listing
 # Show all jobs
 $ flux jobs
 
-# Show the last job submit
+# Show the last job submitted
 $ flux jobs --last
 
 # Filter based on a regular expression (previously pgrep)
@@ -118,7 +168,7 @@ $ flux info <jobid> --timeleft
 
 ### flux admin
 
-The fluxadm (admin) command group is for flux debugging or administrator usage,
+The flux admin command group is for flux debugging or administrator usage,
 usually making a change.
 
 ```console
@@ -131,8 +181,14 @@ ping               measure round-trip latency to Flux services
 restore            Read KVS snapshot from portable archive
 wait-event         Wait for an event 
 memo               Post an RFC 21 memo to a job
-taskmap           Utility function for working with job task maps
+taskmap            Utility function for working with job task maps
 queue              Manipulate flux queues
+```
+
+#### Example
+```console
+# Restore KVS snapshot from a portable archive
+$ flux admin restore archive.tar.gz
 ```
 
 ## flux system
@@ -141,7 +197,6 @@ Flux system displays information about a system.
 
 ```console
 env                Print the flux environment or execute a command inside it
-id                 Convert jobid(s) to another form
 overlay            Show flux overlay network status
 kvs                Flux key-value store utility
 pstree             display job hierarchies
@@ -152,7 +207,11 @@ top                Display Running Flux Jobs
 uptime             Tell how long Flux has been up and running
 ```
 
-**Question for Alec** maybe kvs should just be db or similar?
+#### Example
+```
+# Start flux instance
+$ flux system start
+```
 
 ### flux system logs
 
@@ -170,8 +229,6 @@ We only have one group under here but it could be expanded.
 The root is relevant to submitting or showing information about jobs. This design makes sense
 because most users will see this.
 
-Common commands from flux-core:
-
 
 ## unknown
 
@@ -184,6 +241,7 @@ filemap            Map files into a Flux instance
 ```
 
 Why would I want to do this? Shouldn't I define urgency when I submit?
+(Should this be an admin command not accessible to standard users?)
 
 ```
 urgency         Set job urgency (0-31, HOLD, EXPEDITE, DEFAULT)
@@ -204,8 +262,8 @@ and maybe have directives that users are asking for (either as directives or ano
 ## Notes
 
 - bulksubmit is removed, it's confusing to have submit, batch, and bulksubmit
-- instead of bulksubmit and batch, submit either takes a file (with `-f` or not) 
-- I don't understand the difference between "enqueue in bulk" vs. "submit multiple from a file" (batch) but I would rather have one command to submit a job.
+- instead of bulksubmit, submit either takes a file (with `-f` or not) 
+- I don't understand the difference between "enqueue in bulk" and "submit" but I would rather have one command to submit a job.
 - flux stats and info are merged into just flux info
 - timeleft should be a part of job info
 - last should be part of jobs
@@ -214,3 +272,8 @@ and maybe have directives that users are asking for (either as directives or ano
 - `eventlog` should be `flux info <jobid> --events`
 - pgrep should be a part of flux jobs `--filter`
 - startlog renamed to logs
+
+## Questions for the Flux Team
+- How can we clearly summarize the differences between running a command at the current hirearchical level vs instead creating a new level (and allocation). `batch`, `submit`, `alloc`, and `run` work but they aren't easily distinguishable by new users.
+
+- What is a flux resource and how does it differ from an instance/node in flux?
