@@ -272,3 +272,8 @@ and maybe have directives that users are asking for (either as directives or ano
 - `eventlog` should be `flux info <jobid> --events`
 - pgrep should be a part of flux jobs `--filter`
 - startlog renamed to logs
+
+## Questions for the Flux Team
+- How can we clearly summarize the differences between running a command at the current hirearchical level vs instead creating a new level (and allocation). `batch`, `submit`, `alloc`, and `run` work but they aren't easily distinguishable by new users.
+
+- What is a flux resource and how does it differ from an instance/node in flux?
