@@ -15,6 +15,7 @@ alloc              Interactively allocate a new flux instance and run a command/
 attach             Interactively attach stdin/stdout/stderr to job
 batch              Allocate a new flux instance and run a command/script within
 cancel             Cancel one or more jobs
+id                 Convert jobid(s) to another form
 info               Display info for one or more jobs
 kill               Forcefully kill one or more running jobs
 signal             Send a signal (e.g., raise exception) on one or more jobs
@@ -22,6 +23,7 @@ cron               Schedule tasks on timers and events
 exec               Execute processes across flux ranks in a job
 jobs               Show queued, running, and historical flux jobs
 prune              Purge the oldest inactive jobs
+resource           List/manipulate Flux resource status
 run                Interactively run a command/script in the existing Flux instance
 ssh                Create proxy environment for Flux instance
 submit             Run a command/script in the existing Flux instance
@@ -195,11 +197,9 @@ Flux system displays information about a system.
 
 ```console
 env                Print the flux environment or execute a command inside it
-id                 Convert jobid(s) to another form
 overlay            Show flux overlay network status
 kvs                Flux key-value store utility
 pstree             display job hierarchies
-resource           List/manipulate Flux resource status
 shutdown           Shut down a Flux instance
 start              bootstrap a local Flux instance
 logs               Show Flux instance start and stop times
